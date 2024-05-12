@@ -13,6 +13,7 @@ import errorHandler from "./src/middlewares/error.js";
 
 //Rutas
 import authRoutes from './src/auth/auth.routes.js';
+import postRoutes from './src/post/post.routes.js';
 
 //DB Conexion
 mongoose.connect(process.env.DATABASE, {
@@ -37,6 +38,7 @@ app.use(cors());
 
 //Rutas del Middleware
 app.use('/api', authRoutes);
+app.use('/api', postRoutes);
 
 //Error de middleware
 app.use(errorHandler);
