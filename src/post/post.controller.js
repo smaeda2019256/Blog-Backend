@@ -121,3 +121,22 @@ export const updatePost = async (req, res, next) => {
         next(error);
     }
 };
+
+//Agregar Comentario
+export const addComment = async (req, res, next) => {
+    const { comment } = req.body;
+    try {
+        const postComment = await Post.findByIdAndUpdate(req.params.id, {
+            $push: { comments: { text: comment, postedBy: req.user._id } }
+        },
+            { new: true }
+        );
+        const post = await Post.findById(postComment._id).populate('comments.postedBy', 'name email');
+        res.status(200).json({
+            success: true,
+            post
+        });
+    } catch (error) {
+        next(error);
+    }
+};
