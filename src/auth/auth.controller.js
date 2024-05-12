@@ -1,5 +1,5 @@
 import User from "../user/user.model.js";
-import ErrorResponse from "../utils/errorResponse.js";
+import ErrorResponse from "../helpers/errorResponse.js";
 
 //Regisrar
 export const signup = async (req, res, next) => {
@@ -63,3 +63,20 @@ const sendTokenResponse = async (user, codeStatus, res) => {
         });
 };
 
+// Cerrar sesión
+export const logout = (req, res, next) => {
+    res.clearCookie('token');
+    res.status(200).json({
+        success: true,
+        message: "Logged out"
+    });
+};
+
+// Perfil de usuario
+export const userProfile = async (req, res, next) => {
+    const user = await User.findById(req.user.id).select('-password');
+    res.status(200).json({
+        success: true,
+        user
+    });
+}; 
