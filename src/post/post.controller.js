@@ -78,3 +78,46 @@ export const deletePost = async (req, res, next) => {
         next(error);
     }
 };
+
+//Actualizar Post
+export const updatePost = async (req, res, next) => {
+    try {
+        const { title, content, image } = req.body;
+        const currentPost = await Post.findById(req.params.id);
+
+        // Construir el objeto de datos
+        const data = {
+            title: title || currentPost.title,
+            content: content || currentPost.content,
+            image: image || currentPost.image,
+        };
+
+        // Modificar la imagen del post condicionalmente
+        if (req.body.image !== '') {
+
+            const ImgId = currentPost.image.public_id;
+            if (ImgId) {
+                await cloudinary.uploader.destroy(ImgId);
+            }
+
+            const newImage = await cloudinary.uploader.upload(req.body.image, {
+                folder: 'posts',
+                width: 1200,
+                crop: "scale"
+            });
+
+            data.image = {
+                public_id: newImage.public_id,
+                url: newImage.secure_url
+            };
+        }
+
+        const postUpdate = await Post.findByIdAndUpdate(req.params.id, data, { new: true });
+        res.status(200).json({
+            success: true,
+            postUpdate
+        });
+    } catch (error) {
+        next(error);
+    }
+};
