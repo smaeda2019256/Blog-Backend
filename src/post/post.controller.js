@@ -140,3 +140,24 @@ export const addComment = async (req, res, next) => {
         next(error);
     }
 };
+
+//Agregar Like
+export const addLike = async (req, res, next) => {
+    try {
+        const post = await Post.findByIdAndUpdate(req.params.id, {
+            $addToSet: { likes: req.user._id }
+        },
+            { new: true }
+        );
+        const posts = await Post.find().sort({ createdAt: -1 }).populate('postedBy', 'name');
+        main.io.emit('add-like', posts);
+
+        res.status(200).json({
+            success: true,
+            post,
+            posts
+        });
+    } catch (error) {
+        next(error);
+    }
+};

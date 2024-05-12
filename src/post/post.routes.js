@@ -1,5 +1,5 @@
 import express from "express";
-import { addComment, createPost, deletePost, showPost, showSinglePost, updatePost } from "./post.controller.js";
+import { addComment, addLike, createPost, deletePost, showPost, showSinglePost, updatePost } from "./post.controller.js";
 import { isAdmin, isAuthenticated } from "../middlewares/auth.js";
 const router = express.Router();
 
@@ -9,6 +9,8 @@ router.get('/post/:id', showSinglePost);
 router.delete('/delete/post/:id', isAuthenticated, isAdmin, deletePost);
 router.put('/update/post/:id', isAuthenticated, isAdmin, updatePost);
 router.put('/comment/post/:id', isAuthenticated, addComment);
+router.put('/addlike/post/:id', isAuthenticated, addLike);
+
 
 
 export default router;
